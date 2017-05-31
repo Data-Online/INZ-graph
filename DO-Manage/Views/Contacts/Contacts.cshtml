@@ -1,0 +1,28 @@
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+@using Resources;
+@model DO_Manage.Models.ResultsViewModel
+@{
+    ViewBag.Title = string.Format(Resource.Snippets, Resource.User);
+    var accountType = Session["AccountType"] as string;
+}
+<div class="split">
+    <h2>@ViewBag.Title</h2>
+    <span class="caveats">@Resource.No_MSA<br />@Resource.Admin_Only</span>
+</div>
+<div class="col-sm-12">
+    <h3>@Resource.Choose_Snippet</h3>
+    <div class="form-group">
+        @using (Html.BeginForm("GetContacts", "Contacts"))
+        {
+            <button class="btn btn-link" id="get-users">@Resource.User_GetUsers</button>
+        }
+
+        @using (Html.BeginForm("SyncNewContacts", "Contacts"))
+        {
+            <button class="btn btn-link" id="get-users">@Resource.Contact_SyncNewContacts</button>
+        }
+    </div>
+</div>
+@Html.Partial("_ResultsPartial")
+

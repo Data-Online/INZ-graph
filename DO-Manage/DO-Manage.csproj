@@ -13,8 +13,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Microsoft_Graph_ASPNET_Snippets</RootNamespace>
-    <AssemblyName>Microsoft Graph ASPNET Snippets</AssemblyName>
+    <RootNamespace>DO_Manage</RootNamespace>
+    <AssemblyName>DO_Manage</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
@@ -368,6 +368,7 @@
     <Content Include="Views\SourceContacts\Details.cshtml" />
     <Content Include="Views\SourceContacts\Edit.cshtml" />
     <Content Include="Views\SourceContacts\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\INZPortal - Web Deploy.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

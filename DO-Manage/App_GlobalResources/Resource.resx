@@ -581,4 +581,12 @@
     <value>Please Sign-In to continue</value>
     <comment>Please sign in</comment>
   </data>
+  <data name="Contact_ManageContacts" xml:space="preserve">
+    <value>Manage Contacts</value>
+    <comment>Manage Contacts</comment>
+  </data>
+  <data name="Contact_Statistics" xml:space="preserve">
+    <value>Contact Statistics</value>
+    <comment>Get Statistics</comment>
+  </data>
 </root>

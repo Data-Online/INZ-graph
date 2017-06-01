@@ -217,6 +217,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\EventsService.cs" />
+    <Compile Include="Models\StatsViewModel.cs" />
     <Compile Include="Models\ResultsViewModel.cs" />
     <Compile Include="Models\ContactsService.cs" />
     <Compile Include="Models\SourceContactsService.cs" />
@@ -369,6 +370,7 @@
     <Content Include="Views\SourceContacts\Edit.cshtml" />
     <Content Include="Views\SourceContacts\Index.cshtml" />
     <None Include="Properties\PublishProfiles\INZPortal - Web Deploy.pubxml" />
+    <Content Include="Views\Shared\_StatsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -1,28 +1,50 @@
 ﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
         See LICENSE in the source repository root for complete license information. -->
 @using Resources;
-@model DO_Manage.Models.ResultsViewModel
+@model DO_Manage.Models.StatsViewModel
 @{
     ViewBag.Title = string.Format(Resource.Snippets, Resource.User);
     var accountType = Session["AccountType"] as string;
 }
-<div class="split">
-    <h2>@ViewBag.Title</h2>
-    <span class="caveats">@Resource.No_MSA<br />@Resource.Admin_Only</span>
-</div>
-<div class="col-sm-12">
-    <h3>@Resource.Choose_Snippet</h3>
-    <div class="form-group">
-        @using (Html.BeginForm("GetContacts", "Contacts"))
-        {
-            <button class="btn btn-link" id="get-users">@Resource.User_GetUsers</button>
-        }
 
-        @using (Html.BeginForm("SyncNewContacts", "Contacts"))
-        {
-            <button class="btn btn-link" id="get-users">@Resource.Contact_SyncNewContacts</button>
-        }
-    </div>
+<div>
+    <section id="dashboard">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>@ViewBag.Title</h2>
+                    @*<span class="caveats">@Resource.No_MSA<br />@Resource.Admin_Only</span>*@
+                    @*<hr class="star-primary">*@
+                </div>
+            </div>
+            <div class="divider-10"></div>
+            <div class="row">
+                @using (Html.BeginForm("GetContacts", "Contacts"))
+                {
+                    <div class="col-sm-4 dashboard-item">
+                        <input type="image" src="~/Content/ManageContacts.png" class="img-responsive" alt="Manage Contacts" />
+                        <h3>@Resource.User_GetUsers</h3>
+                    </div>
+                }
+                @using (Html.BeginForm("GetStats", "Contacts"))
+                {
+                    <div class="col-sm-4 dashboard-item">
+                        <input type="image" src="~/Content/ManageContacts.png" class="img-responsive" alt="Manage Contacts" />
+                        <h3>@Resource.Contact_Statistics</h3>
+                    </div>
+                }
+                @using (Html.BeginForm("SyncNewContacts", "Contacts"))
+                {
+                    <div class="col-sm-4 dashboard-item">
+                        <input type="image" src="~/Content/ManageContacts.png" class="img-responsive" alt="Manage Contacts" />
+                        <h3>@Resource.Contact_SyncNewContacts</h3>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
 </div>
-@Html.Partial("_ResultsPartial")
+
+
+@Html.Partial("_StatsPartial")
 

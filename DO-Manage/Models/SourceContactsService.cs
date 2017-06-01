@@ -54,5 +54,16 @@ namespace DO_Manage.Models
 
             return true;
         }
+
+        public async Task<StatsViewModel> GetStats()
+        {
+            // GPA -- Need last sync date storage in source database
+            StatsViewModel result = new StatsViewModel();
+            DateTime lastRefreshDate = DateTime.Now.AddDays(-30);
+            result.ContactsOnLocal = db.Contacts.Count();
+            result.ContactsUpdatedSinceLastSync = db.Contacts.Where(s => s.UpdatedOn > lastRefreshDate).Count();
+            result.ContactsNotSyncedToO365 = db.Contacts.Where(s => s.graphId == null).Count();
+            return result;
+        }
     }
 }

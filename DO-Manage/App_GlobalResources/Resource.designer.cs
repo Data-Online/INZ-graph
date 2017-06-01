@@ -133,6 +133,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Contacts.
+        /// </summary>
+        internal static string Contact_ManageContacts {
+            get {
+                return ResourceManager.GetString("Contact_ManageContacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact Statistics.
+        /// </summary>
+        internal static string Contact_Statistics {
+            get {
+                return ResourceManager.GetString("Contact_Statistics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sync new contacts.
         /// </summary>
         internal static string Contact_SyncNewContacts {

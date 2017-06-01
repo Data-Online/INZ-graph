@@ -70,6 +70,12 @@ namespace DO_Manage.Controllers.Users
             return View("Contacts", results);
         }
 
+        public async Task<ActionResult> GetStats()
+        {
+            StatsViewModel result = await sourceContactsService.GetStats();
+            return View("Contacts", result);
+        }
+
         public async Task<ActionResult> SyncNewContacts()
         {
             ResultsViewModel results = new ResultsViewModel();

@@ -1,0 +1,24 @@
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+@using Resources;
+@model DO_Manage.Models.StatsViewModel
+
+<div class="col-md-12">
+    <h3>Results:</h3>
+    <div class="col-md-6">
+        @if (Model != null)
+        {
+            <h2>INZ Source</h2>
+            <label>
+                Contacts on file: @Model.ContactsOnLocal<br />
+                Contacts requiring updating in Office 365: @Model.ContactsUpdatedSinceLastSync<br />
+                Contacts not copied to Office 365: @Model.ContactsNotSyncedToO365
+            </label><br />
+        }
+        else
+        {
+                <p> @Resource.No_Results </p>
+        }
+        <br />
+    </div>
+</div>

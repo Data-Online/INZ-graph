@@ -3,6 +3,7 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
+using DO_Manage.Helpers;
 using Microsoft.Graph;
 using Resources;
 using System;
@@ -16,6 +17,9 @@ namespace DO_Manage.Models
 {
     public class ContactsService
     {
+        //string farmContactsId = "AAMkAGEyOTI1NmYyLTFjOGEtNGExYy04Y2RkLTRiMzNkNDUwNTVjNgAuAAAAAADZ7WGke0A-TauETMcwNMLaAQDs7SemK8DqQJIXatzBqsNoAACo6iOFAAA=";
+        string folderId;
+
         public class GraphListResponse<T>
         {
             public List<T> Value { get; set; }
@@ -25,6 +29,12 @@ namespace DO_Manage.Models
         {
             public string Mail { get; set; }
             public string DisplayName { get; set; }
+        }
+
+        public async Task<bool> SetParameters(GraphServiceClient graphClient)
+        {
+            this.folderId = await GetFolderId(Settings.O365FolderName, graphClient);
+            return this.folderId == "" ? false:true;
         }
 
         // Update contacts
@@ -50,16 +60,62 @@ namespace DO_Manage.Models
             return items;
         }
 
+        public async Task<StatsViewModel> GetStats(GraphServiceClient graphClient, StatsViewModel result)
+        {
+            string httpRequest = string.Format("https://graph.microsoft.com/v1.0/me/contactfolders/{0}/Contacts/$count", this.folderId);
+            string accessToken = await Helpers.SampleAuthProvider.Instance.GetUserAccessTokenAsync();
+            var httpClient = new HttpClient();
+
+            httpClient.DefaultRequestHeaders.Add("Authorization", string.Format("Bearer {0}", accessToken));
+            var response = await httpClient.GetAsync(httpRequest);
+            response.EnsureSuccessStatusCode();
+            var _result = await response.Content.ReadAsStringAsync();
+
+            //IContactFolderContactsCollectionPage sourceContacts = await graphClient.Me.ContactFolders[this.folderId].Contacts.Request().GetAsync();
+            //result.ContactsOnRemote = sourceContacts.Count();
+
+            result.ContactsOnRemote = Int32.Parse(_result);
+            return result;
+        }
+
+        private async Task<string> GetFolderId(string folderName, GraphServiceClient graphClient)
+        {
+            string folderId = "";
+            try
+            {
+                var folderList = await graphClient.Me.ContactFolders.Request().GetAsync();
+
+                if (folderList.Count > 0)
+                {
+                    folderId = folderList.Where(s => s.DisplayName == folderName).Select(s => s.Id).FirstOrDefault().ToString();
+                }
+
+                if (Settings.CreateO365Folder == "true" && String.IsNullOrEmpty(folderId))
+                {
+                    var _newFolder = graphClient.Me.ContactFolders.Request().AddAsync(new ContactFolder() { DisplayName = Settings.O365FolderName });
+                    folderId = _newFolder.Id.ToString();
+                    //var newFolder = await folderList.Add(newFolder);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return folderId;
+        }
+
         // Get all users.
         public async Task<List<ResultsItem>> GetContacts(GraphServiceClient graphClient)
         {
             List<ResultsItem> items = new List<ResultsItem>();
-            string farmContactsId = "AAMkAGEyOTI1NmYyLTFjOGEtNGExYy04Y2RkLTRiMzNkNDUwNTVjNgAuAAAAAADZ7WGke0A-TauETMcwNMLaAQDs7SemK8DqQJIXatzBqsNoAACo6iOFAAA=";
+            //string farmContactsId = "AAMkAGEyOTI1NmYyLTFjOGEtNGExYy04Y2RkLTRiMzNkNDUwNTVjNgAuAAAAAADZ7WGke0A-TauETMcwNMLaAQDs7SemK8DqQJIXatzBqsNoAACo6iOFAAA=";
             // Get Contacts.
+
+
             IUserContactsCollectionPage contacts = await graphClient.Me.Contacts.Request().GetAsync();
             IUserContactFoldersCollectionPage contactFolders = await graphClient.Me.ContactFolders.Request().GetAsync();
             //ContactFolder farmContacts = await graphClient.Me.ContactFolders[farmContactsId].Request().GetAsync();
-            IContactFolderContactsCollectionPage farmContacts = await graphClient.Me.ContactFolders[farmContactsId].Contacts.Request().GetAsync();
+            IContactFolderContactsCollectionPage farmContacts = await graphClient.Me.ContactFolders[this.folderId].Contacts.Request().GetAsync();
 
 
             //            var zz = await graphClient.Organization.Request().GetAsync();
@@ -125,8 +181,8 @@ namespace DO_Manage.Models
 
         public async Task<string> CreateContact(GraphServiceClient graphClient, Data.Contact sourceContact)
         {
-            string farmContactsId = "AAMkAGEyOTI1NmYyLTFjOGEtNGExYy04Y2RkLTRiMzNkNDUwNTVjNgAuAAAAAADZ7WGke0A-TauETMcwNMLaAQDs7SemK8DqQJIXatzBqsNoAACo6iOFAAA=";
-
+            //string farmContactsId = "AAMkAGEyOTI1NmYyLTFjOGEtNGExYy04Y2RkLTRiMzNkNDUwNTVjNgAuAAAAAADZ7WGke0A-TauETMcwNMLaAQDs7SemK8DqQJIXatzBqsNoAACo6iOFAAA=";
+            // TRY / CATCH! (controller does this)
             List<ResultsItem> items = new List<ResultsItem>();
             string guid = Guid.NewGuid().ToString();
 
@@ -140,7 +196,7 @@ namespace DO_Manage.Models
 
             // Check source contains all required fields.
 
-            Contact contact = await graphClient.Me.ContactFolders[farmContactsId].Contacts.Request().AddAsync(new Contact
+            Contact contact = await graphClient.Me.ContactFolders[this.folderId].Contacts.Request().AddAsync(new Contact
             {
                 EmailAddresses = _contactEmailAddress,
                 BusinessAddress = new PhysicalAddress { City = sourceContact.Address1 },

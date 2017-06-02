@@ -27,6 +27,7 @@ namespace DO_Manage.Controllers.Users
         {
             return View("Contacts");
         }
+
         //  Sync contacts
         /// <summary>
         /// Create any contacts in the target that in the source have no graphId (i.e. they have not yet been synced)
@@ -72,33 +73,63 @@ namespace DO_Manage.Controllers.Users
 
         public async Task<ActionResult> GetStats()
         {
-            StatsViewModel result = await sourceContactsService.GetStats();
+            StatsViewModel result = new StatsViewModel();
+            result.TargetFolderOnO365 = Settings.O365FolderName;
+            try
+            {
+                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+
+                if (await SetupGraphEnvironment(graphClient))
+                {
+                    result = await GetCommonStats(result, graphClient);
+                }
+                else
+                {
+                    result.TargetFolderStatus = string.Format(Resource.Contacts_FolderMissing, Settings.O365FolderName);
+                }
+            }
+            catch (ServiceException se)
+            {
+                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
+            }
             return View("Contacts", result);
         }
 
+ 
+
         public async Task<ActionResult> SyncNewContacts()
         {
-            ResultsViewModel results = new ResultsViewModel();
+            StatsViewModel result = new StatsViewModel();
             int addedEntries = 0, unableToAdd = 0;
+
             try
             {
-
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
-                // Get Source Contacts
-                List<Data.Contact> sourceContacts = await sourceContactsService.GetNewSourceContacts(10);
-
-                // Get contacts.
-                //results.Items = await contactsService.GetContacts(graphClient);
-
-                foreach (var _sourceContact in sourceContacts)
+                if (await SetupGraphEnvironment(graphClient))
                 {
-                    string _newGraphId = await contactsService.CreateContact(graphClient, _sourceContact);
-                    if (await sourceContactsService.AssignGraphIdToContact(_sourceContact.ContactId, _newGraphId))
-                    { addedEntries++; }
-                    else
-                    { unableToAdd++; }
+                    // Get Source Contacts
+                    List<Data.Contact> sourceContacts = await sourceContactsService.GetNewSourceContacts(10);
+
+                    // Sync contacts from source to target.
+                    foreach (var _sourceContact in sourceContacts)
+                    {
+                        string _newGraphId = await contactsService.CreateContact(graphClient, _sourceContact);
+                        if (await sourceContactsService.AssignGraphIdToContact(_sourceContact.ContactId, _newGraphId))
+                        { addedEntries++; }
+                        else
+                        { unableToAdd++; }
+                    }
+
+                    result = await GetCommonStats(result, graphClient);
+
+                    result.ContactsSyncedToO365 = addedEntries;
+                    result.ContactsNotSyncedToO365 = unableToAdd;
+                }
+                else
+                {
+                    result.TargetFolderStatus = string.Format(Resource.Contacts_FolderMissing, Settings.O365FolderName);
                 }
             }
             catch (ServiceException se)
@@ -107,10 +138,22 @@ namespace DO_Manage.Controllers.Users
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
 
-            // Test update 
-
-            return View("Contacts", results);
+            return View("Contacts", result);
         }
 
+        private async Task<bool> SetupGraphEnvironment(GraphServiceClient graphClient)
+        {
+            return await contactsService.SetParameters(graphClient);
+        }
+
+        private async Task<StatsViewModel> GetCommonStats(StatsViewModel result, GraphServiceClient graphClient)
+        {
+            result = await sourceContactsService.GetStats();
+            result = await contactsService.GetStats(graphClient, result);
+            result.TargetFolderStatus = Resource.Contacts_FolderExists;
+            result.TargetFolderOnO365 = Settings.O365FolderName;
+
+            return result;
+        }
     }
 }

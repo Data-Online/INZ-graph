@@ -4,20 +4,41 @@
 @model DO_Manage.Models.StatsViewModel
 
 <div class="col-md-12">
-    <h3>Results:</h3>
-    <div class="col-md-6">
+    <h3>Current Status:</h3>
+    <div class="col-md-12">
         @if (Model != null)
         {
-            <h2>INZ Source</h2>
-            <label>
-                Contacts on file: @Model.ContactsOnLocal<br />
-                Contacts requiring updating in Office 365: @Model.ContactsUpdatedSinceLastSync<br />
-                Contacts not copied to Office 365: @Model.ContactsNotSyncedToO365
-            </label><br />
+            <div class="col-sm-4 dashboard-item">
+                <h3>@Resource.Company_FolderStatus</h3>
+                <label>
+                    Target folder: @Model.TargetFolderOnO365<br />
+                    Folder status: @Model.TargetFolderStatus<br />
+                </label>
+            </div>
+            if (@Model.TargetFolderStatus == Resource.Contacts_FolderExists)
+            {
+                <div class="col-sm-4 dashboard-item">
+
+                    <h3>@Resource.Company_SourceDatabase</h3>
+                    <label>
+                        Contacts on file: @Model.ContactsOnLocal<br />
+                        Contacts requiring updating in Office 365: @Model.ContactsUpdatedSinceLastSync<br />
+                        Contacts not yet copied to Office 365: @Model.ContactsNotYetSyncedToO365
+                    </label>
+                </div>
+                <div class="col-sm-4 dashboard-item">
+                    <h3>@Resource.Company_TargetDatabase</h3>
+                    <label>
+                        Contacts on file: @Model.ContactsOnRemote<br />
+                        Contacts copied in this session: @Model.ContactsSyncedToO365<br />
+                        Contacts that were not copied in this session: @Model.ContactsNotSyncedToO365<br />
+                    </label>
+                </div>
+            }
         }
         else
         {
-                <p> @Resource.No_Results </p>
+            <p> @Resource.No_Statistics </p>
         }
         <br />
     </div>

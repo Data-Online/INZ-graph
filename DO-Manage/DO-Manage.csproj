@@ -216,6 +216,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Settings.cs" />
     <Compile Include="Models\EventsService.cs" />
     <Compile Include="Models\StatsViewModel.cs" />
     <Compile Include="Models\ResultsViewModel.cs" />
@@ -254,7 +255,9 @@
     <Content Include="Content\freelancer.min.css" />
     <Content Include="Content\LargeFileUploadResource.bmp" />
     <Content Include="Content\ManageContacts.png" />
+    <Content Include="Content\Stats.png" />
     <Content Include="Content\test.png" />
+    <Content Include="Content\UserSync.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

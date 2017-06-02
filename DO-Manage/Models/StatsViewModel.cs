@@ -13,7 +13,13 @@ namespace DO_Manage.Models
     {
         public int ContactsOnRemote;
         public int ContactsUpdatedSinceLastSync;
-        public int ContactsNotSyncedToO365;
+        public int ContactsNotYetSyncedToO365;
         public int ContactsOnLocal;
+
+        public int ContactsSyncedToO365;
+        public int ContactsNotSyncedToO365;
+
+        public string TargetFolderOnO365;
+        public string TargetFolderStatus;
     }
 }

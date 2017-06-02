@@ -115,11 +115,38 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Target Folder.
+        /// </summary>
+        internal static string Company_FolderStatus {
+            get {
+                return ResourceManager.GetString("Company_FolderStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Irrigation New Zealand.
         /// </summary>
         internal static string Company_Name {
             get {
                 return ResourceManager.GetString("Company_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INZ Source System.
+        /// </summary>
+        internal static string Company_SourceDatabase {
+            get {
+                return ResourceManager.GetString("Company_SourceDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Office 365.
+        /// </summary>
+        internal static string Company_TargetDatabase {
+            get {
+                return ResourceManager.GetString("Company_TargetDatabase", resourceCulture);
             }
         }
         
@@ -133,29 +160,56 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exits on Office 365.
+        /// </summary>
+        internal static string Contacts_FolderExists {
+            get {
+                return ResourceManager.GetString("Contacts_FolderExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please create folder {0} in Office 365.
+        /// </summary>
+        internal static string Contacts_FolderMissing {
+            get {
+                return ResourceManager.GetString("Contacts_FolderMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List Source Contacts.
+        /// </summary>
+        internal static string Contacts_ListContacts {
+            get {
+                return ResourceManager.GetString("Contacts_ListContacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Manage Contacts.
         /// </summary>
-        internal static string Contact_ManageContacts {
+        internal static string Contacts_ManageContacts {
             get {
-                return ResourceManager.GetString("Contact_ManageContacts", resourceCulture);
+                return ResourceManager.GetString("Contacts_ManageContacts", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Contact Statistics.
         /// </summary>
-        internal static string Contact_Statistics {
+        internal static string Contacts_Statistics {
             get {
-                return ResourceManager.GetString("Contact_Statistics", resourceCulture);
+                return ResourceManager.GetString("Contacts_Statistics", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Sync new contacts.
         /// </summary>
-        internal static string Contact_SyncNewContacts {
+        internal static string Contacts_SyncNewContacts {
             get {
-                return ResourceManager.GetString("Contact_SyncNewContacts", resourceCulture);
+                return ResourceManager.GetString("Contacts_SyncNewContacts", resourceCulture);
             }
         }
         
@@ -714,6 +768,15 @@ namespace Resources {
         internal static string No_Return_Data {
             get {
                 return ResourceManager.GetString("No_Return_Data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select &quot;Contact Statistics&quot; to update.
+        /// </summary>
+        internal static string No_Statistics {
+            get {
+                return ResourceManager.GetString("No_Statistics", resourceCulture);
             }
         }
         

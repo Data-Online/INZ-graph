@@ -565,7 +565,7 @@
     <value>Upload a large file</value>
     <comment>UploadLargeFile button text for Files view</comment>
   </data>
-  <data name="Contact_SyncNewContacts" xml:space="preserve">
+  <data name="Contacts_SyncNewContacts" xml:space="preserve">
     <value>Sync new contacts</value>
     <comment>Copy and new contacts over to Office 365</comment>
   </data>
@@ -581,12 +581,40 @@
     <value>Please Sign-In to continue</value>
     <comment>Please sign in</comment>
   </data>
-  <data name="Contact_ManageContacts" xml:space="preserve">
+  <data name="Contacts_ManageContacts" xml:space="preserve">
     <value>Manage Contacts</value>
     <comment>Manage Contacts</comment>
   </data>
-  <data name="Contact_Statistics" xml:space="preserve">
+  <data name="Contacts_Statistics" xml:space="preserve">
     <value>Contact Statistics</value>
     <comment>Get Statistics</comment>
+  </data>
+  <data name="Company_SourceDatabase" xml:space="preserve">
+    <value>INZ Source System</value>
+    <comment>Source system for contact data</comment>
+  </data>
+  <data name="Company_TargetDatabase" xml:space="preserve">
+    <value>Office 365</value>
+    <comment>Target system is Office 365</comment>
+  </data>
+  <data name="No_Statistics" xml:space="preserve">
+    <value>Select "Contact Statistics" to update</value>
+    <comment>Statistics require updating</comment>
+  </data>
+  <data name="Contacts_ListContacts" xml:space="preserve">
+    <value>List Source Contacts</value>
+    <comment>Lists all contacts in the source system</comment>
+  </data>
+  <data name="Contacts_FolderExists" xml:space="preserve">
+    <value>Exits on Office 365</value>
+    <comment>Whether the correct folder exists in Office 365</comment>
+  </data>
+  <data name="Contacts_FolderMissing" xml:space="preserve">
+    <value>Please create folder {0} in Office 365</value>
+    <comment>The required folder is missing on Office 365</comment>
+  </data>
+  <data name="Company_FolderStatus" xml:space="preserve">
+    <value>Target Folder</value>
+    <comment>Target folder status</comment>
   </data>
 </root>

@@ -62,7 +62,7 @@ namespace DO_Manage.Models
             DateTime lastRefreshDate = DateTime.Now.AddDays(-30);
             result.ContactsOnLocal = db.Contacts.Count();
             result.ContactsUpdatedSinceLastSync = db.Contacts.Where(s => s.UpdatedOn > lastRefreshDate).Count();
-            result.ContactsNotSyncedToO365 = db.Contacts.Where(s => s.graphId == null).Count();
+            result.ContactsNotYetSyncedToO365 = db.Contacts.Where(s => s.graphId == null).Count();
             return result;
         }
     }

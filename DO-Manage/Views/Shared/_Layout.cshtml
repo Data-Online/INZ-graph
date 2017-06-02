@@ -36,7 +36,8 @@
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
                     </button>
-                    <a class="navbar-brand" href="#page-top">@Resource.Company_Name</a>
+                    @*<a class="navbar-brand" href="#page-top">@Resource.Company_Name</a>*@
+                    @Html.ActionLink(Resource.Company_Name, "Index", "Home", new { @class = "navbar-brand" } )
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -44,8 +45,8 @@
                     {
                         <text>
                             <ul class="nav navbar-nav navbar-right">
-                                <li class="page-scroll">@Html.ActionLink("Manage Contacts", "Index", "Contacts")</li>
-                                <li>@Html.ActionLink("Source Contacts", "Index", "SourceContacts")</li>
+                                @*<li class="page-scroll">@Html.ActionLink("Manage Contacts", "Index", "Contacts")</li>
+                                <li>@Html.ActionLink("Source Contacts", "Index", "SourceContacts")</li>*@
                                 @if (accountType != "msa")
                                 {
                                     <li>@Html.ActionLink("Admin scopes", "Index", "Admin")</li>

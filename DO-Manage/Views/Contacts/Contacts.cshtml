@@ -3,7 +3,7 @@
 @using Resources;
 @model DO_Manage.Models.StatsViewModel
 @{
-    ViewBag.Title = string.Format(Resource.Snippets, Resource.User);
+    ViewBag.Title = string.Format(Resource.Contacts_ManageContacts);
     var accountType = Session["AccountType"] as string;
 }
 
@@ -19,25 +19,25 @@
             </div>
             <div class="divider-10"></div>
             <div class="row">
-                @using (Html.BeginForm("GetContacts", "Contacts"))
+                @*@using (Html.BeginForm("GetContacts", "Contacts"))
                 {
                     <div class="col-sm-4 dashboard-item">
                         <input type="image" src="~/Content/ManageContacts.png" class="img-responsive" alt="Manage Contacts" />
-                        <h3>@Resource.User_GetUsers</h3>
+                        <h3>@Resource.Contacts_ListContacts</h3>
                     </div>
-                }
+                }*@
                 @using (Html.BeginForm("GetStats", "Contacts"))
                 {
                     <div class="col-sm-4 dashboard-item">
-                        <input type="image" src="~/Content/ManageContacts.png" class="img-responsive" alt="Manage Contacts" />
-                        <h3>@Resource.Contact_Statistics</h3>
+                        <input type="image" src="~/Content/Stats.png" class="img-responsive" alt="Manage Contacts" />
+                        <h3>@Resource.Contacts_Statistics</h3>
                     </div>
                 }
                 @using (Html.BeginForm("SyncNewContacts", "Contacts"))
                 {
                     <div class="col-sm-4 dashboard-item">
-                        <input type="image" src="~/Content/ManageContacts.png" class="img-responsive" alt="Manage Contacts" />
-                        <h3>@Resource.Contact_SyncNewContacts</h3>
+                        <input type="image" src="~/Content/UserSync.png" class="img-responsive" alt="Manage Contacts" />
+                        <h3>@Resource.Contacts_SyncNewContacts</h3>
                     </div>
                 }
             </div>

@@ -205,7 +205,16 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sync new contacts.
+        ///   Looks up a localized string similar to Sync Changes.
+        /// </summary>
+        internal static string Contacts_SyncContactUpdates {
+            get {
+                return ResourceManager.GetString("Contacts_SyncContactUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy New Contacts.
         /// </summary>
         internal static string Contacts_SyncNewContacts {
             get {

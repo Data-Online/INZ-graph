@@ -36,8 +36,15 @@
                 @using (Html.BeginForm("SyncNewContacts", "Contacts"))
                 {
                     <div class="col-sm-4 dashboard-item">
-                        <input type="image" src="~/Content/UserSync.png" class="img-responsive" alt="Manage Contacts" id="submitbtn" />
+                        <input type="image" src="~/Content/UserAdd.png" class="img-responsive" alt="Manage Contacts" id="submitbtn" />
                         <h3>@Resource.Contacts_SyncNewContacts</h3>
+                    </div>
+                }
+                @using (Html.BeginForm("SyncContactUpdates", "Contacts"))
+                {
+                    <div class="col-sm-4 dashboard-item">
+                        <input type="image" src="~/Content/UserSync.png" class="img-responsive" alt="Sync Contact Updates" id="submitbtn" />
+                        <h3>@Resource.Contacts_SyncContactUpdates</h3>
                     </div>
                 }
             </div>

@@ -34,11 +34,11 @@ namespace DO_Manage.Models
         public async Task<bool> SetParameters(GraphServiceClient graphClient)
         {
             this.folderId = await GetFolderId(Settings.O365FolderName, graphClient);
-            return this.folderId == "" ? false:true;
+            return this.folderId == "" ? false : true;
         }
 
         // Update contacts
-        public async Task<List<ResultsItem>> UpdateContact(GraphServiceClient graphClient, string id, string name)
+        public async Task<List<ResultsItem>> UpdateContact_(GraphServiceClient graphClient, string id, string name)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
@@ -60,6 +60,16 @@ namespace DO_Manage.Models
             return items;
         }
 
+        public async Task<string> UpdateContact(GraphServiceClient graphClient, Data.Contact sourceContact)
+        {
+            Contact contact = await graphClient.Me.Contacts[sourceContact.graphId].Request().UpdateAsync(MapContactDetails(sourceContact));
+            if (contact != null)
+            {
+                return contact.Id;
+            }
+            return "";
+        }
+
         public async Task<StatsViewModel> GetStats(GraphServiceClient graphClient, StatsViewModel result)
         {
             string httpRequest = string.Format("https://graph.microsoft.com/v1.0/me/contactfolders/{0}/Contacts/$count", this.folderId);
@@ -69,7 +79,7 @@ namespace DO_Manage.Models
             httpClient.DefaultRequestHeaders.Add("Authorization", string.Format("Bearer {0}", accessToken));
             var response = await httpClient.GetAsync(httpRequest);
             response.EnsureSuccessStatusCode();
-            var _result = await response.Content.ReadAsStringAsync();
+            var _result = await response.Content.ReadAsStringAsync() ?? "0";
 
             //IContactFolderContactsCollectionPage sourceContacts = await graphClient.Me.ContactFolders[this.folderId].Contacts.Request().GetAsync();
             //result.ContactsOnRemote = sourceContacts.Count();
@@ -102,6 +112,11 @@ namespace DO_Manage.Models
             }
 
             return folderId;
+        }
+        private async Task<Contact> GetContact(GraphServiceClient graphClient, string id)
+        {
+            Contact contact = await graphClient.Me.Contacts[id].Request().GetAsync();
+            return contact;
         }
 
         // Get all users.
@@ -187,29 +202,71 @@ namespace DO_Manage.Models
             string guid = Guid.NewGuid().ToString();
 
             // Add the contact.
-            IEnumerable<EmailAddress> _contactEmailAddress = new List<EmailAddress>() { new EmailAddress()
-                            {
-                                Address = sourceContact.eMail1 ?? "",
-                                Name = String.Format("{0} {1}", sourceContact.FirstName, sourceContact.LastName),
-                            }
-            };
+            ////IEnumerable<EmailAddress> _contactEmailAddress = new List<EmailAddress>() {
+            ////    new EmailAddress {Address = sourceContact.eMail1 ?? "", Name = String.Format("{0} {1}", sourceContact.FirstName, sourceContact.LastName) },
+            ////    new EmailAddress {  Address = sourceContact.eMail2 ?? "", Name = String.Format("{0} {1}", sourceContact.FirstName, sourceContact.LastName)} };
+
+            //_contactEmailAddress.Add(new EmailAddress()
+            //{
+            //    Address = sourceContact.eMail1 ?? "",
+            //    Name = String.Format("{0} {1}", sourceContact.FirstName, sourceContact.LastName),
+            //});
+            //_contactEmailAddress.Add(new EmailAddress()
+            //{
+            //    Address = sourceContact.eMail2 ?? "",
+            //    Name = String.Format("{0} {1}", sourceContact.FirstName, sourceContact.LastName),
+            //});
 
             // Check source contains all required fields.
 
-            Contact contact = await graphClient.Me.ContactFolders[this.folderId].Contacts.Request().AddAsync(new Contact
-            {
-                EmailAddresses = _contactEmailAddress,
-                BusinessAddress = new PhysicalAddress { City = sourceContact.Address1 },
-                GivenName = sourceContact.FirstName ?? "",
-                Surname = sourceContact.LastName ?? "",
-                MiddleName = sourceContact.MiddleName ?? ""
-            });
+            ////Contact newContact = new Contact
+            ////{
+            ////    EmailAddresses = _contactEmailAddress,
+            ////    BusinessAddress = new PhysicalAddress
+            ////    {
+            ////        City = sourceContact.City == null ? "" : sourceContact.City.City1,
+            ////        Street = sourceContact.Address1 ?? "" + ", " + sourceContact.Address2 ?? "",
+            ////        PostalCode = sourceContact.PostCode ?? "",
+            ////        State = sourceContact.Region == null ? "" : sourceContact.Region.Region1,
+            ////        CountryOrRegion = sourceContact.Country == null ? "" : sourceContact.Country.Country1
+            ////    },
+            ////    GivenName = sourceContact.FirstName ?? "",
+            ////    Surname = sourceContact.LastName ?? "",
+            ////    MiddleName = sourceContact.MiddleName ?? ""
+            ////};
+
+            ////Contact contact = await graphClient.Me.ContactFolders[this.folderId].Contacts.Request().AddAsync(newContact);
+            Contact contact = await graphClient.Me.ContactFolders[this.folderId].Contacts.Request().AddAsync(MapContactDetails(sourceContact));
 
             if (contact != null)
             {
                 return contact.Id;
             }
             return "";
+        }
+
+        private Contact MapContactDetails(Data.Contact sourceContact)
+        {
+            // Add the contact.
+            IEnumerable<EmailAddress> _contactEmailAddress = new List<EmailAddress>() {
+                new EmailAddress {Address = sourceContact.eMail1 ?? "", Name = String.Format("{0} {1}", sourceContact.FirstName, sourceContact.LastName) },
+                new EmailAddress {  Address = sourceContact.eMail2 ?? "", Name = String.Format("{0} {1}", sourceContact.FirstName, sourceContact.LastName)} };
+
+            return new Contact
+            {
+                EmailAddresses = _contactEmailAddress,
+                BusinessAddress = new PhysicalAddress
+                {
+                    City = sourceContact.City == null ? "" : sourceContact.City.City1,
+                    Street = sourceContact.Address1 ?? "" + ", " + sourceContact.Address2 ?? "",
+                    PostalCode = sourceContact.PostCode ?? "",
+                    State = sourceContact.Region == null ? "" : sourceContact.Region.Region1,
+                    CountryOrRegion = sourceContact.Country == null ? "" : sourceContact.Country.Country1
+                },
+                GivenName = sourceContact.FirstName ?? "",
+                Surname = sourceContact.LastName ?? "",
+                MiddleName = sourceContact.MiddleName ?? ""
+            };
         }
 
     }

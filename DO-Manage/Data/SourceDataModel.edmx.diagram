@@ -6,6 +6,12 @@
     <edmx:Diagrams>
       <Diagram DiagramId="9ccb8614ce8e4fdd83757fbcdfa4acbd" Name="Diagram1">
         <EntityTypeShape EntityType="INZ_dbModel.Contact" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="INZ_dbModel.City" Width="1.5" PointX="0.75" PointY="10" />
+        <AssociationConnector Association="INZ_dbModel.FK_Contacts_Cities" />
+        <EntityTypeShape EntityType="INZ_dbModel.Region" Width="1.5" PointX="0.75" PointY="12.5" />
+        <AssociationConnector Association="INZ_dbModel.FK_Contacts_Regions" />
+        <EntityTypeShape EntityType="INZ_dbModel.Country" Width="1.5" PointX="3.375" PointY="0.875" />
+        <AssociationConnector Association="INZ_dbModel.FK_Contacts_Countries" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

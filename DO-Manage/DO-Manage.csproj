@@ -200,12 +200,21 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\SourceContactsController.cs" />
+    <Compile Include="Data\City.cs">
+      <DependentUpon>SourceDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Data\Contact.cs">
       <DependentUpon>SourceDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
+    <Compile Include="Data\Country.cs">
+      <DependentUpon>SourceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Region.cs">
+      <DependentUpon>SourceDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\HttpClientExtensions.cs" />
     <Compile Include="Helpers\SDKHelper.cs" />
     <Compile Include="Helpers\IAuthProvider.cs" />
@@ -273,6 +282,7 @@
     <Content Include="Scripts\jqBootstrapValidation.js" />
     <Content Include="Scripts\jquery\jquery.js" />
     <Content Include="Scripts\jquery\jquery.min.js" />
+    <Content Include="Scripts\spin.min.js" />
     <Content Include="Scripts\ui-helpers.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Data\SourceDataModel.Context.tt">

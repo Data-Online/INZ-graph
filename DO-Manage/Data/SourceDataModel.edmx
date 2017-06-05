@@ -5,6 +5,13 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="INZ_dbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Cities">
+          <Key>
+            <PropertyRef Name="CityId" />
+          </Key>
+          <Property Name="CityId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="City" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="Contacts">
           <Key>
             <PropertyRef Name="ContactId" />
@@ -36,10 +43,76 @@
           <Property Name="JoiningDate" Type="date" />
           <Property Name="INZPosition" Type="int" />
           <Property Name="INZMember" Type="bit" />
-          <Property Name="graphId" Type="nvarchar" MaxLength="500" />
+          <Property Name="graphId" Type="nvarchar" MaxLength="200" />
+          <Property Name="LastO365Sync" Type="datetime" />
         </EntityType>
+        <EntityType Name="Countries">
+          <Key>
+            <PropertyRef Name="CountryId" />
+          </Key>
+          <Property Name="CountryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Country" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Regions">
+          <Key>
+            <PropertyRef Name="RegionId" />
+          </Key>
+          <Property Name="RegionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Region" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <Association Name="FK_Contacts_Cities">
+          <End Role="Cities" Type="Self.Cities" Multiplicity="0..1" />
+          <End Role="Contacts" Type="Self.Contacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cities">
+              <PropertyRef Name="CityId" />
+            </Principal>
+            <Dependent Role="Contacts">
+              <PropertyRef Name="CityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contacts_Countries">
+          <End Role="Countries" Type="Self.Countries" Multiplicity="0..1" />
+          <End Role="Contacts" Type="Self.Contacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="CountryId" />
+            </Principal>
+            <Dependent Role="Contacts">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contacts_Regions">
+          <End Role="Regions" Type="Self.Regions" Multiplicity="0..1" />
+          <End Role="Contacts" Type="Self.Contacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Regions">
+              <PropertyRef Name="RegionId" />
+            </Principal>
+            <Dependent Role="Contacts">
+              <PropertyRef Name="RegionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="INZ_dbModelStoreContainer">
+          <EntitySet Name="Cities" EntityType="Self.Cities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Contacts" EntityType="Self.Contacts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Countries" EntityType="Self.Countries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Regions" EntityType="Self.Regions" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Contacts_Cities" Association="Self.FK_Contacts_Cities">
+            <End Role="Cities" EntitySet="Cities" />
+            <End Role="Contacts" EntitySet="Contacts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contacts_Countries" Association="Self.FK_Contacts_Countries">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Contacts" EntitySet="Contacts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contacts_Regions" Association="Self.FK_Contacts_Regions">
+            <End Role="Regions" EntitySet="Regions" />
+            <End Role="Contacts" EntitySet="Contacts" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -76,11 +149,90 @@
           <Property Name="JoiningDate" Type="DateTime" Precision="0" />
           <Property Name="INZPosition" Type="Int32" />
           <Property Name="INZMember" Type="Boolean" />
-          <Property Name="graphId" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="graphId" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="City" Relationship="INZ_dbModel.FK_Contacts_Cities" FromRole="Contact" ToRole="City" />
+          <Property Name="LastO365Sync" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Region" Relationship="INZ_dbModel.FK_Contacts_Regions" FromRole="Contact" ToRole="Region" />
+          <NavigationProperty Name="Country" Relationship="INZ_dbModel.FK_Contacts_Countries" FromRole="Contact" ToRole="Country" />
         </EntityType>
         <EntityContainer Name="INZ_dbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Contacts" EntityType="Self.Contact" />
+          <EntitySet Name="Cities" EntityType="INZ_dbModel.City" />
+          <AssociationSet Name="FK_Contacts_Cities" Association="INZ_dbModel.FK_Contacts_Cities">
+            <End Role="City" EntitySet="Cities" />
+            <End Role="Contact" EntitySet="Contacts" />
+          </AssociationSet>
+          <EntitySet Name="Regions" EntityType="INZ_dbModel.Region" />
+          <AssociationSet Name="FK_Contacts_Regions" Association="INZ_dbModel.FK_Contacts_Regions">
+            <End Role="Region" EntitySet="Regions" />
+            <End Role="Contact" EntitySet="Contacts" />
+          </AssociationSet>
+          <EntitySet Name="Countries" EntityType="INZ_dbModel.Country" />
+          <AssociationSet Name="FK_Contacts_Countries" Association="INZ_dbModel.FK_Contacts_Countries">
+            <End Role="Country" EntitySet="Countries" />
+            <End Role="Contact" EntitySet="Contacts" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="City">
+          <Key>
+            <PropertyRef Name="CityId" />
+          </Key>
+          <Property Name="CityId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="City1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Contacts" Relationship="INZ_dbModel.FK_Contacts_Cities" FromRole="City" ToRole="Contact" />
+        </EntityType>
+        <Association Name="FK_Contacts_Cities">
+          <End Type="INZ_dbModel.City" Role="City" Multiplicity="0..1" />
+          <End Type="INZ_dbModel.Contact" Role="Contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="City">
+              <PropertyRef Name="CityId" />
+            </Principal>
+            <Dependent Role="Contact">
+              <PropertyRef Name="CityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Region">
+          <Key>
+            <PropertyRef Name="RegionId" />
+          </Key>
+          <Property Name="RegionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Region1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Contacts" Relationship="INZ_dbModel.FK_Contacts_Regions" FromRole="Region" ToRole="Contact" />
+        </EntityType>
+        <Association Name="FK_Contacts_Regions">
+          <End Type="INZ_dbModel.Region" Role="Region" Multiplicity="0..1" />
+          <End Type="INZ_dbModel.Contact" Role="Contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Region">
+              <PropertyRef Name="RegionId" />
+            </Principal>
+            <Dependent Role="Contact">
+              <PropertyRef Name="RegionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="CountryId" />
+          </Key>
+          <Property Name="CountryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Country1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Contacts" Relationship="INZ_dbModel.FK_Contacts_Countries" FromRole="Country" ToRole="Contact" />
+        </EntityType>
+        <Association Name="FK_Contacts_Countries">
+          <End Type="INZ_dbModel.Country" Role="Country" Multiplicity="0..1" />
+          <End Type="INZ_dbModel.Contact" Role="Contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="CountryId" />
+            </Principal>
+            <Dependent Role="Contact">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -90,6 +242,7 @@
           <EntitySetMapping Name="Contacts">
             <EntityTypeMapping TypeName="INZ_dbModel.Contact">
               <MappingFragment StoreEntitySet="Contacts">
+                <ScalarProperty Name="LastO365Sync" ColumnName="LastO365Sync" />
                 <ScalarProperty Name="graphId" ColumnName="graphId" />
                 <ScalarProperty Name="ContactId" ColumnName="ContactId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
@@ -118,6 +271,30 @@
                 <ScalarProperty Name="JoiningDate" ColumnName="JoiningDate" />
                 <ScalarProperty Name="INZPosition" ColumnName="INZPosition" />
                 <ScalarProperty Name="INZMember" ColumnName="INZMember" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cities">
+            <EntityTypeMapping TypeName="INZ_dbModel.City">
+              <MappingFragment StoreEntitySet="Cities">
+                <ScalarProperty Name="City1" ColumnName="City" />
+                <ScalarProperty Name="CityId" ColumnName="CityId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Regions">
+            <EntityTypeMapping TypeName="INZ_dbModel.Region">
+              <MappingFragment StoreEntitySet="Regions">
+                <ScalarProperty Name="Region1" ColumnName="Region" />
+                <ScalarProperty Name="RegionId" ColumnName="RegionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Countries">
+            <EntityTypeMapping TypeName="INZ_dbModel.Country">
+              <MappingFragment StoreEntitySet="Countries">
+                <ScalarProperty Name="Country1" ColumnName="Country" />
+                <ScalarProperty Name="CountryId" ColumnName="CountryId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

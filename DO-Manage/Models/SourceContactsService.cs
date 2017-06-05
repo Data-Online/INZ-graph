@@ -23,7 +23,7 @@ namespace DO_Manage.Models
 
         public async Task<List<Contact>> GetNewSourceContacts(int maxEntriesToReturn)
         {
-            var _result = db.Contacts.Where(s => s.graphId == null).Take(Math.Max(1,maxEntriesToReturn)).ToList();
+            var _result = db.Contacts.Where(s => s.graphId == null).Take(Math.Max(1, maxEntriesToReturn)).ToList();
             return _result;
         }
 
@@ -41,6 +41,7 @@ namespace DO_Manage.Models
             }
 
             _contact.graphId = graphId;
+            _contact.LastO365Sync = DateTime.Now;
 
             db.Entry(_contact).State = EntityState.Modified;
             try
@@ -49,7 +50,7 @@ namespace DO_Manage.Models
             }
             catch (DbEntityValidationException e)
             {
-                
+
             }
 
             return true;
@@ -59,11 +60,30 @@ namespace DO_Manage.Models
         {
             // GPA -- Need last sync date storage in source database
             StatsViewModel result = new StatsViewModel();
-            DateTime lastRefreshDate = DateTime.Now.AddDays(-30);
+           // DateTime lastRefreshDate = DateTime.Now.AddDays(-30);
             result.ContactsOnLocal = db.Contacts.Count();
-            result.ContactsUpdatedSinceLastSync = db.Contacts.Where(s => s.UpdatedOn > lastRefreshDate).Count();
+            //result.ContactsUpdatedSinceLastSync = db.Contacts.Where(s => s.UpdatedOn > lastRefreshDate).Count();
+            result.ContactsUpdatedSinceLastSync = db.Contacts.Where(s => s.UpdatedOn > s.LastO365Sync).Count();
             result.ContactsNotYetSyncedToO365 = db.Contacts.Where(s => s.graphId == null).Count();
             return result;
         }
+
+        public async Task<List<Contact>> GetUpdatedContacts(int maxEntriesToReturn)
+        {
+            var _result = db.Contacts.Where(s => s.UpdatedOn > s.LastO365Sync | s.LastO365Sync == null).Take(Math.Max(1, maxEntriesToReturn)).ToList();
+            return _result;
+        }
+
+        //public async void UpdateSyncDateTime()
+        //{
+        //    PortalConfig currentSettings = db.PortalConfigs.FirstOrDefault();
+
+        //    //DateTime lastUpdate = db.PortalConfigs.Select(s => s.ContactsLastSyncDate).FirstOrDefault() ?? DateTime.Now;
+        //    currentSettings.ContactsLastSyncDate = DateTime.Now;
+        //    db.Entry(currentSettings).State = EntityState.Modified;
+
+        //    db.SaveChanges();
+
+        //}
     }
 }

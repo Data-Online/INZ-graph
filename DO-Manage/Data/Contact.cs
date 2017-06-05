@@ -42,5 +42,10 @@ namespace DO_Manage.Data
         public Nullable<int> INZPosition { get; set; }
         public Nullable<bool> INZMember { get; set; }
         public string graphId { get; set; }
+        public Nullable<System.DateTime> LastO365Sync { get; set; }
+    
+        public virtual City City { get; set; }
+        public virtual Region Region { get; set; }
+        public virtual Country Country { get; set; }
     }
 }

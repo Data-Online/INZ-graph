@@ -20,12 +20,12 @@
             <div class="divider-10"></div>
             <div class="row">
                 @*@using (Html.BeginForm("GetContacts", "Contacts"))
-                {
-                    <div class="col-sm-4 dashboard-item">
-                        <input type="image" src="~/Content/ManageContacts.png" class="img-responsive" alt="Manage Contacts" />
-                        <h3>@Resource.Contacts_ListContacts</h3>
-                    </div>
-                }*@
+                    {
+                        <div class="col-sm-4 dashboard-item">
+                            <input type="image" src="~/Content/ManageContacts.png" class="img-responsive" alt="Manage Contacts" />
+                            <h3>@Resource.Contacts_ListContacts</h3>
+                        </div>
+                    }*@
                 @using (Html.BeginForm("GetStats", "Contacts"))
                 {
                     <div class="col-sm-4 dashboard-item">
@@ -36,7 +36,7 @@
                 @using (Html.BeginForm("SyncNewContacts", "Contacts"))
                 {
                     <div class="col-sm-4 dashboard-item">
-                        <input type="image" src="~/Content/UserSync.png" class="img-responsive" alt="Manage Contacts" />
+                        <input type="image" src="~/Content/UserSync.png" class="img-responsive" alt="Manage Contacts" id="submitbtn" />
                         <h3>@Resource.Contacts_SyncNewContacts</h3>
                     </div>
                 }
@@ -45,6 +45,86 @@
     </section>
 </div>
 
+<div id="loading">
+    <div id="loadingcontent">
+        <p id="loadingspinner">
+            Running ...
+        </p>
+    </div>
+</div>
+
+
 
 @Html.Partial("_StatsPartial")
+
+@section scripts {
+
+    @*<script type="text/javascript">
+                $(function () {
+                    $("#submitbtn").click(function () {
+                        $("#loading").fadeIn();
+                    });
+                });
+        </script>*@
+
+    <script type="text/javascript"
+            src="@Url.Content("~/Scripts/spin.min.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+            $(".img-responsive").click(function () {
+                $("#loading").fadeIn();
+                var opts = {
+                    lines: 12, // The number of lines to draw
+                    length: 7, // The length of each line
+                    width: 4, // The line thickness
+                    radius: 10, // The radius of the inner circle
+                    color: '#000', // #rgb or #rrggbb
+                    speed: 1, // Rounds per second
+                    trail: 60, // Afterglow percentage
+                    shadow: false, // Whether to render a shadow
+                    hwaccel: false // Whether to use hardware acceleration
+                };
+                var target = document.getElementById('loading');
+                var spinner = new Spinner(opts).spin(target);
+            });
+        });
+    </script>
+
+
+
+
+}
+
+<style type="text/css">
+    #loading {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.8);
+        z-index: 1000;
+    }
+
+    #loadingcontent {
+        display: table;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    #loadingspinner {
+        display: table-cell;
+        vertical-align: middle;
+        width: 100%;
+        text-align: center;
+        font-size: larger;
+        padding-top: 80px;
+    }
+</style>
+
+
 

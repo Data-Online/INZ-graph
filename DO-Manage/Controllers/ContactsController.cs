@@ -54,7 +54,7 @@ namespace DO_Manage.Controllers.Users
 
                 foreach (var _contact in results.Items)
                 {
-                    var _result = contactsService.UpdateContact(graphClient, _contact.Id, "test_update");
+                    var _result = contactsService.UpdateContact_(graphClient, _contact.Id, "test_update");
                 }
 
                 await sourceContactsService.AssignGraphIdToContact(sourceContacts[0].ContactId, results.Items.FirstOrDefault().Id);
@@ -96,39 +96,48 @@ namespace DO_Manage.Controllers.Users
             return View("Contacts", result);
         }
 
- 
+
 
         public async Task<ActionResult> SyncNewContacts()
         {
             StatsViewModel result = new StatsViewModel();
             int addedEntries = 0, unableToAdd = 0;
-
+            List<Data.Contact> sourceContacts = new List<Data.Contact>();
             try
             {
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+                bool complete = false;
+
                 if (await SetupGraphEnvironment(graphClient))
                 {
-                    // Get Source Contacts
-                    List<Data.Contact> sourceContacts = await sourceContactsService.GetNewSourceContacts(10);
-
-                    // Sync contacts from source to target.
-                    foreach (var _sourceContact in sourceContacts)
+                    while (!complete)
                     {
-                        string _newGraphId = await contactsService.CreateContact(graphClient, _sourceContact);
-                        if (await sourceContactsService.AssignGraphIdToContact(_sourceContact.ContactId, _newGraphId))
-                        { addedEntries++; }
+                        sourceContacts = await sourceContactsService.GetNewSourceContacts(100);
+                        // Loop through source contacts in chunks of x records
+                        if (sourceContacts.Count > 0)
+                        {
+                            foreach (var sourceContact in sourceContacts)
+                            {
+                                string newGraphId = await contactsService.CreateContact(graphClient, sourceContact);
+                                if (await sourceContactsService.AssignGraphIdToContact(sourceContact.ContactId, newGraphId))
+                                { addedEntries++; }
+                                else
+                                { unableToAdd++; }
+                            }
+                        }
                         else
-                        { unableToAdd++; }
+                        {
+                            complete = true;
+                        }
                     }
-
                     result = await GetCommonStats(result, graphClient);
-
                     result.ContactsSyncedToO365 = addedEntries;
                     result.ContactsNotSyncedToO365 = unableToAdd;
                 }
                 else
                 {
+                    // This is the only test performed at this stage
                     result.TargetFolderStatus = string.Format(Resource.Contacts_FolderMissing, Settings.O365FolderName);
                 }
             }
@@ -141,6 +150,62 @@ namespace DO_Manage.Controllers.Users
             return View("Contacts", result);
         }
 
+        public async Task<ActionResult> SyncContactUpdates()
+        {
+            StatsViewModel result = new StatsViewModel();
+            List<Data.Contact> sourceContacts = new List<Data.Contact>();
+
+
+            try
+            {
+                // Initialize the GraphServiceClient.
+                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+                bool complete = false;
+                int addedEntries = 0, unableToAdd = 0;
+
+                if (await SetupGraphEnvironment(graphClient))
+                {
+                    while (!complete)
+                    {
+                        sourceContacts = await sourceContactsService.GetUpdatedContacts(100);
+                        // Loop through source contacts in chunks of x records
+                        if (sourceContacts.Count > 0)
+                        {
+                            foreach (var sourceContact in sourceContacts)
+                            {
+                                // Mark source contact as updated by setting current date
+
+                                string newGraphId = await contactsService.UpdateContact(graphClient, sourceContact);
+                                if (await sourceContactsService.AssignGraphIdToContact(sourceContact.ContactId, newGraphId))
+                                { addedEntries++; }
+                                else
+                                { unableToAdd++; }
+                            }
+                        }
+                        else
+                        {
+                            complete = true;
+                        }
+                    }
+                    result = await GetCommonStats(result, graphClient);
+                    result.ContactsSyncedToO365 = addedEntries;
+                    result.ContactsNotSyncedToO365 = unableToAdd;
+                }
+                else
+                {
+                    // This is the only test performed at this stage
+                    result.TargetFolderStatus = string.Format(Resource.Contacts_FolderMissing, Settings.O365FolderName);
+                }
+            }
+            catch (ServiceException se)
+            {
+                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
+            }
+
+
+            return View("Contacts", result);
+        }
         private async Task<bool> SetupGraphEnvironment(GraphServiceClient graphClient)
         {
             return await contactsService.SetParameters(graphClient);

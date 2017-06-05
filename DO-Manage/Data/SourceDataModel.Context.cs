@@ -26,5 +26,8 @@ namespace DO_Manage.Data
         }
     
         public virtual DbSet<Contact> Contacts { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
+        public virtual DbSet<Region> Regions { get; set; }
+        public virtual DbSet<Country> Countries { get; set; }
     }
 }
